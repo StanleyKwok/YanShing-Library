@@ -18,13 +18,12 @@ export const bookType = defineType({
       options: {
         source: 'title',
         maxLength: 200,
-        // 💡 自訂 slugify 邏輯：支援中文，並將空格替換為連字號 "-"
         slugify: (input) =>
           input
             .trim()
             .toLowerCase()
-            .replace(/\s+/g, '-') // 將空格替換為 "-"
-            .replace(/[^\w\u4e00-\u9fa5-]+/g, '') // 保留英數字、中文字符與連字號，過濾掉特殊標點符號
+            .replace(/\s+/g, '-')
+            .replace(/[^\w\u4e00-\u9fa5-]+/g, '')
             .slice(0, 200),
       },
       validation: (Rule) => Rule.required(),
@@ -46,16 +45,74 @@ export const bookType = defineType({
       type: 'string',
     }),
     defineField({
-      name: 'originalText',
-      title: '典籍原文',
-      type: 'text',
-      rows: 10,
-    }),
-    defineField({
-      name: 'translatedText',
-      title: 'AI 現代白話譯文',
-      type: 'text',
-      rows: 10,
+      name: 'chapters',
+      title: '經文各卷 / 各品內容',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          name: 'chapter',
+          title: '章節 / 品',
+          fields: [
+            defineField({
+              name: 'chapterSlug',
+              title: '章節 Slug / 品號 (例如 1, 2, 3)',
+              type: 'string',
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: 'volumeTitle',
+              title: '卷名 (例如 上卷, 中卷, 下卷)',
+              type: 'string',
+            }),
+            defineField({
+              name: 'chapterTitle',
+              title: '品名 / 章節名稱 (例如 第一品 忉利天宮神通品)',
+              type: 'string',
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: 'passages',
+              title: '段落列表 (Passages)',
+              type: 'array',
+              of: [
+                {
+                  type: 'object',
+                  name: 'passage',
+                  title: '段落對照',
+                  fields: [
+                    defineField({
+                      name: 'original',
+                      title: '文言文原文',
+                      type: 'text',
+                      rows: 3,
+                      validation: (Rule) => Rule.required(),
+                    }),
+                    defineField({
+                      name: 'translation',
+                      title: '白話文譯文',
+                      type: 'text',
+                      rows: 3,
+                    }),
+                  ],
+                  preview: {
+                    select: {
+                      title: 'original',
+                      subtitle: 'translation',
+                    },
+                  },
+                },
+              ],
+            }),
+          ],
+          preview: {
+            select: {
+              title: 'chapterTitle',
+              subtitle: 'volumeTitle',
+            },
+          },
+        },
+      ],
     }),
   ],
 })
