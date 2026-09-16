@@ -15,7 +15,18 @@ export const bookType = defineType({
       name: 'slug',
       title: '網址網籤 (Slug)',
       type: 'slug',
-      options: { source: 'title' },
+      options: {
+        source: 'title',
+        maxLength: 200,
+        // 💡 自訂 slugify 邏輯：支援中文，並將空格替換為連字號 "-"
+        slugify: (input) =>
+          input
+            .trim()
+            .toLowerCase()
+            .replace(/\s+/g, '-') // 將空格替換為 "-"
+            .replace(/[^\w\u4e00-\u9fa5-]+/g, '') // 保留英數字、中文字符與連字號，過濾掉特殊標點符號
+            .slice(0, 200),
+      },
       validation: (Rule) => Rule.required(),
     }),
     defineField({
@@ -23,14 +34,12 @@ export const bookType = defineType({
       title: '典籍作者 / 譯者',
       type: 'string',
     }),
-    // 💡 卷首詩句 / 題詩
     defineField({
       name: 'poem',
       title: '卷首詩句 / 題詩',
       type: 'text',
       rows: 4,
     }),
-    // 💡 新增：卷首詩句 / 題詩 作者
     defineField({
       name: 'poemAuthor',
       title: '卷首詩句 / 題詩 作者',
