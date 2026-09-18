@@ -28,6 +28,30 @@ export const bookType = defineType({
       },
       validation: (Rule) => Rule.required(),
     }),
+
+    // 🌟 新增欄位 1：聖賢仙佛 (例如：地藏菩薩、觀世音菩薩、太上老君)
+    defineField({
+      name: 'deity',
+      title: '聖賢仙佛',
+      type: 'string',
+      description: '本典籍主尊或相關聖賢仙佛（例如：地藏菩薩）',
+    }),
+
+    // 🌟 新增欄位 2：分類 Category (下拉選單或自訂字串)
+    defineField({
+      name: 'category',
+      title: '分類 (Category)',
+      type: 'string',
+      options: {
+        list: [
+          { title: '佛經 (Buddhist Sutra)', value: 'sutra' },
+          { title: '懺法 (Repentance Ritual)', value: 'repentance' },
+          { title: '道藏 / 仙經 (Taoist Scripture)', value: 'taoist' },
+          { title: '論著 / 善書 (Treatise & Morality)', value: 'treatise' },
+        ],
+      },
+    }),
+
     defineField({
       name: 'author',
       title: '典籍作者 / 譯者',
