@@ -1,9 +1,9 @@
 import { type SchemaTypeDefinition } from 'sanity'
 import { bookType } from './book'
+import { figureType } from './figure' // 👈 引入具名的 figureType
 
-export const schemaTypes: SchemaTypeDefinition[] = [bookType]
+export const schemaTypes: SchemaTypeDefinition[] = [bookType, figureType]
 
-// 新增此匯出以適應 sanity.config.ts 的預設要求
 export const schema: { types: SchemaTypeDefinition[] } = {
-  types: [bookType],
+  types: [bookType, figureType],
 }

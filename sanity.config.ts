@@ -1,17 +1,21 @@
-import type { StructureResolver } from 'sanity/structure'
+'use client'
 
-export const structure: StructureResolver = (S) =>
-  S.list()
-    .title('藏經閣 Content')
-    .items([
-      // 1. 現有的 Book (經文) 選單
-      S.documentTypeListItem('book').title('典籍 / 經文 (Book)'),
+import { defineConfig } from 'sanity'
+import { structureTool } from 'sanity/structure'
+import { visionTool } from '@sanity/vision'
+import { apiVersion, dataset, projectId } from './sanity/env'
+import { schema } from './sanity/schemaTypes'
+import { structure } from './sanity/structure'
 
-      // 2. 👈 新增這段：Figure (聖賢 / 作者檔案) 選單
-      S.documentTypeListItem('figure').title('聖賢 / 作者檔案 (Figure)'),
+export const config = defineConfig({
+  basePath: '/studio',
+  projectId,
+  dataset,
+  schema,
+  plugins: [
+    structureTool({ structure }),
+    visionTool({ defaultApiVersion: apiVersion }),
+  ],
+})
 
-      // 如果原本有 S.divider() 或其他動態列表，保留在其下方即可
-      ...S.documentTypeListItems().filter(
-        (item) => !['book', 'figure'].includes(item.getId() ?? '')
-      ),
-    ])
+export default config
